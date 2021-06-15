@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Text.Json;
 using EmailService;
 
 namespace TicketManagementSystem
@@ -136,12 +134,6 @@ namespace TicketManagementSystem
             {
                 throw new InvalidTicketException("Title or description were null");
             }
-        }
-
-        private void WriteTicketToFile(Ticket ticket)
-        {
-            var ticketJson = JsonSerializer.Serialize(ticket);
-            File.WriteAllText(Path.Combine(Path.GetTempPath(), $"ticket_{ticket.Id}.json"), ticketJson);
         }
     }
 
