@@ -10,6 +10,7 @@ namespace TicketManagementSystem
 
         public TicketService(IUserRepository userRepository = null)
         {
+            // This should be set up with proper IoC but we can't change Program.cs
             _userRepository = userRepository ?? new UserRepository();
         }
         
