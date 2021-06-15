@@ -8,8 +8,8 @@ namespace TicketManagementSystem
         User GetUser(string username);
         User GetAccountManager();
     }
-
-    public class UserRepository : IDisposable, IUserRepository
+    
+    public class UserRepository : IUserRepository
     {
         public User GetUser(string username)
         {
@@ -23,6 +23,7 @@ namespace TicketManagementSystem
                 {
                     connection.Open();
 
+                    // CB: the command should also be in a using block
                     var command = new SqlCommand(sql, connection)
                     {
                         CommandType = System.Data.CommandType.Text,
@@ -43,11 +44,6 @@ namespace TicketManagementSystem
         {
             // Assume this method does not need to change.
             return GetUser("Sarah");
-        }
-
-        public void Dispose()
-        {
-            // Free up resources
         }
     }
 }

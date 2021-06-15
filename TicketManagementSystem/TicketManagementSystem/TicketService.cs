@@ -1,10 +1,18 @@
 ﻿using System;
+using System;
 using EmailService;
 
 namespace TicketManagementSystem
 {
     public class TicketService
     {
+        private readonly IUserRepository _userRepository;
+
+        public TicketService(IUserRepository userRepository = null)
+        {
+            _userRepository = userRepository ?? new UserRepository();
+        }
+        
         public int CreateTicket(string title,
                                 Priority priority,
                                 string assignedUsername,
@@ -16,12 +24,9 @@ namespace TicketManagementSystem
             ValidateDescriptionOrThrowInvalidTicketException(description);
 
             User user = null;
-            using (var ur = new UserRepository())
+            if (assignedUsername != null)
             {
-                if (assignedUsername != null)
-                {
-                    user = ur.GetUser(assignedUsername);
-                }
+                user = _userRepository.GetUser(assignedUsername);
             }
 
             if (user == null)
@@ -96,12 +101,9 @@ namespace TicketManagementSystem
         public void AssignTicket(int ticketId, string username)
         {
             User user = null;
-            using (var ur = new UserRepository())
+            if (username != null)
             {
-                if (username != null)
-                {
-                    user = ur.GetUser(username);
-                }
+                user = _userRepository.GetUser(username);
             }
 
             if (user == null)
