@@ -9,8 +9,7 @@ namespace TicketManagementSystem.Tests
     {
         [TestCase(null)]
         [TestCase("")]
-        [TestCase(" ")]
-        public void CreateTicket_TitleIsEmpty_ThrowsInvalidTicketException(string testInputTitle)
+        public void CreateTicket_TitleIsNullOrEmpty_ThrowsInvalidTicketException(string testInputTitle)
         {
             // Arrange
             
@@ -18,13 +17,12 @@ namespace TicketManagementSystem.Tests
             Action act = () => Subject.CreateTicket(testInputTitle, default, default, default, default, default);
 
             // Assert
-            act.Should().Throw<InvalidTicketException>();
+            act.Should().Throw<InvalidTicketException>().Where(e => e.Message == "Title or description were null");
         }        
         
         [TestCase(null)]
         [TestCase("")]
-        [TestCase(" ")]
-        public void CreateTicket_DescriptionIsEmpty_ThrowsInvalidTicketException(string testInputDescription)
+        public void CreateTicket_DescriptionIsNullOrEmpty_ThrowsInvalidTicketException(string testInputDescription)
         {
             // Arrange
             
@@ -32,7 +30,7 @@ namespace TicketManagementSystem.Tests
             Action act = () => Subject.CreateTicket(default, default, default, testInputDescription, default, default);
 
             // Assert
-            act.Should().Throw<InvalidTicketException>();
+            act.Should().Throw<InvalidTicketException>().Where(e => e.Message == "Title or description were null");
         }
     }
 }

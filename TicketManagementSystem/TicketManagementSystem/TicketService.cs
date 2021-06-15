@@ -7,26 +7,28 @@ namespace TicketManagementSystem
 {
     public class TicketService
     {
-        public int CreateTicket(string title, Priority priority, string assignedUser, string description, DateTime dateAndTime, bool isPayingCustomer)
+        public int CreateTicket(string title,
+                                Priority priority,
+                                string assignedUsername,
+                                string description,
+                                DateTime dateAndTime,
+                                bool isPayingCustomer)
         {
-            // Check if t or desc are null or if they are invalid and throw exception
-            if (title == null || description == null || title == "" || description == "")
-            {
-                throw new InvalidTicketException("Title or description were null");
-            }
+            ValidateTitleOrThrowInvalidTicketException(description);
+            ValidateDescriptionOrThrowInvalidTicketException(description);
 
             User user = null;
             using (var ur = new UserRepository())
             {
-                if (assignedUser != null)
+                if (assignedUsername != null)
                 {
-                    user = ur.GetUser(assignedUser);
+                    user = ur.GetUser(assignedUsername);
                 }
             }
 
             if (user == null)
             {
-                throw new UnknownUserException("User " + assignedUser + " not found");
+                throw new UnknownUserException("User " + assignedUsername + " not found");
             }
 
             var priorityRaised = false;
@@ -59,7 +61,7 @@ namespace TicketManagementSystem
             if (priority == Priority.High)
             {
                 var emailService = new EmailServiceProxy();
-                emailService.SendEmailToAdministrator(title, assignedUser);
+                emailService.SendEmailToAdministrator(title, assignedUsername);
             }
 
             double price = 0;
@@ -93,6 +95,21 @@ namespace TicketManagementSystem
 
             // Return the id
             return id;
+        }
+
+        private void ValidateTitleOrThrowInvalidTicketException(string title)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new InvalidTicketException("Title or description were null");
+            }
+        }
+        private void ValidateDescriptionOrThrowInvalidTicketException(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+            {
+                throw new InvalidTicketException("Title or description were null");
+            }
         }
 
         public void AssignTicket(int ticketId, string username)
