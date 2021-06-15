@@ -22,17 +22,7 @@ namespace TicketManagementSystem
         {
             ValidateTitleOrThrowInvalidTicketException(description);
             ValidateDescriptionOrThrowInvalidTicketException(description);
-
-            User user = null;
-            if (assignedUsername != null)
-            {
-                user = _userRepository.GetUser(assignedUsername);
-            }
-
-            if (user == null)
-            {
-                throw new UserNotFoundException(assignedUsername);
-            }
+            var user = GetUser(assignedUsername);
 
             var priorityRaised = false;
             if (dateAndTime < DateTime.UtcNow - TimeSpan.FromHours(1))
@@ -96,6 +86,22 @@ namespace TicketManagementSystem
 
             var ticketId = TicketRepository.CreateTicket(ticket);
             return ticketId;
+        }
+
+        private User GetUser(string assignedUsername)
+        {
+            User user = null;
+            if (assignedUsername != null)
+            {
+                user = _userRepository.GetUser(assignedUsername);
+            }
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(assignedUsername);
+            }
+
+            return user;
         }
 
         public void AssignTicket(int ticketId, string username)
