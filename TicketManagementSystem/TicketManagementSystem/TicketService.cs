@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Text.Json;
 using EmailService;
@@ -8,10 +7,10 @@ namespace TicketManagementSystem
 {
     public class TicketService
     {
-        public int CreateTicket(string t, Priority p, string assignedTo, string desc, DateTime d, bool isPayingCustomer)
+        public int CreateTicket(string title, Priority priority, string assignedUser, string description, DateTime dateAndTime, bool isPayingCustomer)
         {
             // Check if t or desc are null or if they are invalid and throw exception
-            if (t == null || desc == null || t == "" || desc == "")
+            if (title == null || description == null || title == "" || description == "")
             {
                 throw new InvalidTicketException("Title or description were null");
             }
@@ -19,48 +18,48 @@ namespace TicketManagementSystem
             User user = null;
             using (var ur = new UserRepository())
             {
-                if (assignedTo != null)
+                if (assignedUser != null)
                 {
-                    user = ur.GetUser(assignedTo);
+                    user = ur.GetUser(assignedUser);
                 }
             }
 
             if (user == null)
             {
-                throw new UnknownUserException("User " + assignedTo + " not found");
+                throw new UnknownUserException("User " + assignedUser + " not found");
             }
 
             var priorityRaised = false;
-            if (d < DateTime.UtcNow - TimeSpan.FromHours(1))
+            if (dateAndTime < DateTime.UtcNow - TimeSpan.FromHours(1))
             {
-                if (p == Priority.Low)
+                if (priority == Priority.Low)
                 {
-                    p = Priority.Medium;
+                    priority = Priority.Medium;
                     priorityRaised = true;
                 }
-                else if (p == Priority.Medium)
+                else if (priority == Priority.Medium)
                 {
-                    p = Priority.High;
+                    priority = Priority.High;
                     priorityRaised = true;
                 }
             }
 
-            if ((t.Contains("Crash") || t.Contains("Important") || t.Contains("Failure")) && !priorityRaised)
+            if ((title.Contains("Crash") || title.Contains("Important") || title.Contains("Failure")) && !priorityRaised)
             {
-                if (p == Priority.Low)
+                if (priority == Priority.Low)
                 {
-                    p = Priority.Medium;
+                    priority = Priority.Medium;
                 }
-                else if (p == Priority.Medium)
+                else if (priority == Priority.Medium)
                 {
-                    p = Priority.High;
+                    priority = Priority.High;
                 }
             }
 
-            if (p == Priority.High)
+            if (priority == Priority.High)
             {
                 var emailService = new EmailServiceProxy();
-                emailService.SendEmailToAdministrator(t, assignedTo);
+                emailService.SendEmailToAdministrator(title, assignedUser);
             }
 
             double price = 0;
@@ -69,7 +68,7 @@ namespace TicketManagementSystem
             {
                 // Only paid customers have an account manager.
                 accountManager = new UserRepository().GetAccountManager();
-                if (p == Priority.High)
+                if (priority == Priority.High)
                 {
                     price = 100;
                 }
@@ -81,11 +80,11 @@ namespace TicketManagementSystem
 
             var ticket = new Ticket()
             {
-                Title = t,
+                Title = title,
                 AssignedUser = user,
-                Priority = p,
-                Description = desc,
-                Created = d,
+                Priority = priority,
+                Description = description,
+                Created = dateAndTime,
                 PriceDollars = price,
                 AccountManager = accountManager
             };
@@ -96,7 +95,7 @@ namespace TicketManagementSystem
             return id;
         }
 
-        public void AssignTicket(int id, string username)
+        public void AssignTicket(int ticketId, string username)
         {
             User user = null;
             using (var ur = new UserRepository())
@@ -112,11 +111,11 @@ namespace TicketManagementSystem
                 throw new UnknownUserException("User not found");
             }
 
-            var ticket = TicketRepository.GetTicket(id);
+            var ticket = TicketRepository.GetTicket(ticketId);
 
             if (ticket == null)
             {
-                throw new ApplicationException("No ticket found for id " + id);
+                throw new ApplicationException("No ticket found for id " + ticketId);
             }
 
             ticket.AssignedUser = user;
