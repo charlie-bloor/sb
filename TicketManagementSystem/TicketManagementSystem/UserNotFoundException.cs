@@ -3,7 +3,7 @@ namespace TicketManagementSystem
 {
     public class UserNotFoundException : Exception
     {
-        public UserNotFoundException(string message) : base(message)
+        public UserNotFoundException(string username) : base("User " + username + " not found")
         {
         }
     }
