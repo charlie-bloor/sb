@@ -95,21 +95,6 @@ namespace TicketManagementSystem
             return ticketId;
         }
 
-        private void ValidateTitleOrThrowInvalidTicketException(string title)
-        {
-            if (string.IsNullOrEmpty(title))
-            {
-                throw new InvalidTicketException("Title or description were null");
-            }
-        }
-        private void ValidateDescriptionOrThrowInvalidTicketException(string description)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                throw new InvalidTicketException("Title or description were null");
-            }
-        }
-
         public void AssignTicket(int ticketId, string username)
         {
             User user = null;
@@ -136,6 +121,21 @@ namespace TicketManagementSystem
             ticket.AssignedUser = user;
 
             TicketRepository.UpdateTicket(ticket);
+        }
+
+        private void ValidateTitleOrThrowInvalidTicketException(string title)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new InvalidTicketException("Title or description were null");
+            }
+        }
+        private void ValidateDescriptionOrThrowInvalidTicketException(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+            {
+                throw new InvalidTicketException("Title or description were null");
+            }
         }
 
         private void WriteTicketToFile(Ticket ticket)
