@@ -3,7 +3,13 @@ using System.Data.SqlClient;
 
 namespace TicketManagementSystem
 {
-    public class UserRepository : IDisposable
+    public interface IUserRepository
+    {
+        User GetUser(string username);
+        User GetAccountManager();
+    }
+
+    public class UserRepository : IDisposable, IUserRepository
     {
         public User GetUser(string username)
         {

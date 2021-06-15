@@ -26,7 +26,7 @@ namespace TicketManagementSystem
 
             if (user == null)
             {
-                throw new UnknownUserException("User " + assignedUsername + " not found");
+                throw new UserNotFoundException("User " + assignedUsername + " not found");
             }
 
             var priorityRaised = false;
@@ -106,7 +106,7 @@ namespace TicketManagementSystem
 
             if (user == null)
             {
-                throw new UnknownUserException("User not found");
+                throw new UserNotFoundException("User not found");
             }
 
             var ticket = TicketRepository.GetTicket(ticketId);
