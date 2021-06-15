@@ -32,5 +32,24 @@ namespace TicketManagementSystem.Tests
             // Assert
             act.Should().Throw<InvalidTicketException>().Where(e => e.Message == "Title or description were null");
         }
+        
+        [TestCase("foo")]
+        [TestCase(null)]
+        public void CreateTicket_UserIsNotFound_ThrowsUserNotFoundException(string testInputAssignedUserName)
+        {
+            // Arrange
+            var testInputTitle = "Valid title";
+            var testInputDescription = "Valid description";
+
+            GetMock<IUserRepository>()
+                .Setup(x => x.GetUser(testInputAssignedUserName))
+                .Returns(() => null);
+            
+            // Act
+            Action act = () => Subject.CreateTicket(testInputTitle, default, testInputAssignedUserName, testInputDescription, default, default);
+
+            // Assert
+            act.Should().Throw<UserNotFoundException>();
+        }
     }
 }
