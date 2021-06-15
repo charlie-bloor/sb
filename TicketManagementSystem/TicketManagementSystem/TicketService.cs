@@ -91,10 +91,8 @@ namespace TicketManagementSystem
                 AccountManager = accountManager
             };
 
-            var id = TicketRepository.CreateTicket(ticket);
-
-            // Return the id
-            return id;
+            var ticketId = TicketRepository.CreateTicket(ticket);
+            return ticketId;
         }
 
         private void ValidateTitleOrThrowInvalidTicketException(string title)
