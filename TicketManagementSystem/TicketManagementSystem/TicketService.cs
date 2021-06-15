@@ -6,11 +6,18 @@ namespace TicketManagementSystem
 {
     public class TicketService
     {
+        private readonly IEmailService _emailService;
+        private readonly IPriorityCalculator _priorityCalculator;
         private readonly IUserRepository _userRepository;
-
-        public TicketService(IUserRepository userRepository = null)
+        
+        public TicketService(IEmailService emailService = null,
+                             IPriorityCalculator priorityCalculator = null,
+                             IUserRepository userRepository = null)
         {
-            // This should be set up with proper IoC but we can't change Program.cs
+            // The following is "poor person's DI" and should be set up with proper IoC.
+            // But proper IoC would require changing Program.cs.
+            _emailService = emailService ?? new EmailServiceProxy();
+            _priorityCalculator = priorityCalculator ?? new PriorityCalculator();
             _userRepository = userRepository ?? new UserRepository();
         }
         
@@ -24,38 +31,11 @@ namespace TicketManagementSystem
             ValidateTitleOrThrowInvalidTicketException(description);
             ValidateDescriptionOrThrowInvalidTicketException(description);
             var user = GetUser(assignedUsername);
-
-            var priorityRaised = false;
-            if (dateAndTime < DateTime.UtcNow - TimeSpan.FromHours(1))
-            {
-                if (priority == Priority.Low)
-                {
-                    priority = Priority.Medium;
-                    priorityRaised = true;
-                }
-                else if (priority == Priority.Medium)
-                {
-                    priority = Priority.High;
-                    priorityRaised = true;
-                }
-            }
-
-            if ((title.Contains("Crash") || title.Contains("Important") || title.Contains("Failure")) && !priorityRaised)
-            {
-                if (priority == Priority.Low)
-                {
-                    priority = Priority.Medium;
-                }
-                else if (priority == Priority.Medium)
-                {
-                    priority = Priority.High;
-                }
-            }
+            priority = _priorityCalculator.Calculate(priority, title, dateAndTime);
 
             if (priority == Priority.High)
             {
-                var emailService = new EmailServiceProxy();
-                emailService.SendEmailToAdministrator(title, assignedUsername);
+                _emailService.SendEmailToAdministrator(title, assignedUsername);
             }
 
             double price = 0;
