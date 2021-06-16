@@ -1,6 +1,14 @@
 ﻿using System;
-using System;
 using EmailService;
+
+// TODO:
+// TicketService becomes a wrapper that builds its own host
+// Create TicketCreator
+// Create validator classes and "inject"
+// Create PriceCalculator
+// Create TicketAssigner
+// The TicketRepository must remain static, so create a wrapper class
+// Optionally, create an GetAccountManagerGetter: is this going too far?
 
 namespace TicketManagementSystem
 {
@@ -14,7 +22,7 @@ namespace TicketManagementSystem
                              IPriorityCalculator priorityCalculator = null,
                              IUserRepository userRepository = null)
         {
-            // The following is "poor person's DI" and should be set up with proper IoC.
+            // The following is "poor person's DI" and should be replaced with proper IoC.
             // But proper IoC would require changing Program.cs.
             _emailService = emailService ?? new EmailServiceProxy();
             _priorityCalculator = priorityCalculator ?? new PriorityCalculator();
@@ -30,39 +38,22 @@ namespace TicketManagementSystem
         {
             ValidateTitleOrThrowInvalidTicketException(description);
             ValidateDescriptionOrThrowInvalidTicketException(description);
-            var user = GetUser(assignedUsername);
             priority = _priorityCalculator.Calculate(priority, title, dateAndTime);
 
             if (priority == Priority.High)
             {
                 _emailService.SendEmailToAdministrator(title, assignedUsername);
             }
-
-            double price = 0;
-            User accountManager = null;
-            if (isPayingCustomer)
-            {
-                // Only paid customers have an account manager.
-                accountManager = new UserRepository().GetAccountManager();
-                if (priority == Priority.High)
-                {
-                    price = 100;
-                }
-                else
-                {
-                    price = 50;
-                }
-            }
-
-            var ticket = new Ticket()
+            
+            var ticket = new Ticket
             {
                 Title = title,
-                AssignedUser = user,
+                AssignedUser = GetUser(assignedUsername),
                 Priority = priority,
                 Description = description,
                 Created = dateAndTime,
-                PriceDollars = price,
-                AccountManager = accountManager
+                PriceDollars = GetPrice(priority, isPayingCustomer),
+                AccountManager = GetAccountManager(isPayingCustomer)
             };
 
             var ticketId = TicketRepository.CreateTicket(ticket);
@@ -124,6 +115,32 @@ namespace TicketManagementSystem
                 throw new InvalidTicketException("Title or description were null");
             }
         }
+
+        private double GetPrice(Priority priority, bool isPayingCustomer)
+        {
+            if (!isPayingCustomer)
+            {
+                return 0;
+            }
+            
+            if (priority == Priority.High)
+            {
+                return 100;
+            }
+
+            return 50;
+        }
+
+        private User GetAccountManager(bool isPayingCustomer)
+        {
+            if (isPayingCustomer)
+            {
+                // Only paid customers have an account manager.
+                return _userRepository.GetAccountManager();
+            }
+
+            return null;
+        }        
     }
 
     public enum Priority
