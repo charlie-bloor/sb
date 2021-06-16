@@ -12,7 +12,7 @@ namespace TicketManagementSystem.Repositories
 
     public class InjectableTicketRepository : IInjectableTicketRepository
     {
-        // TODO: locking!
+        // TODO: locking if required
         
         public int CreateTicket(Ticket ticket)
         {
