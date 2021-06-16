@@ -4,11 +4,11 @@ namespace TicketManagementSystem
 {
     public interface IClock
     {
-        DateTime UtcNow();
+        DateTime UtcNow { get; }
     }
     
-    public class  Clock : IClock
+    public class Clock : IClock
     {
-        public DateTime UtcNow() => DateTime.Now;
+        public DateTime UtcNow => DateTime.Now;
     }
 }

@@ -6,6 +6,7 @@ namespace TicketManagementSystem
     public interface IUserRepository
     {
         User GetUser(string username);
+        User GetUserOrThrowNotFoundException(string username);
         User GetAccountManager();
     }
     
@@ -38,6 +39,22 @@ namespace TicketManagementSystem
             {
                 return null;
             }
+        }
+
+        public User GetUserOrThrowNotFoundException(string username)
+        {
+            User user = null;
+            if (username != null)
+            {
+                user = GetUser(username);
+            }
+
+            if (user == null)
+            {
+                throw new UserNotFoundException(username);
+            }
+
+            return user;
         }
 
         public User GetAccountManager()
