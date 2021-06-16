@@ -1,4 +1,4 @@
-namespace TicketManagementSystem
+namespace TicketManagementSystem.TicketCreation
 {
     public interface ITicketPriceCalculator
     {

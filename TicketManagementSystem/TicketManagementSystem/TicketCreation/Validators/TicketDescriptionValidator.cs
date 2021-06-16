@@ -1,4 +1,6 @@
-namespace TicketManagementSystem.Validators
+using TicketManagementSystem.Exceptions;
+
+namespace TicketManagementSystem.TicketCreation.Validators
 {
     public interface ITicketDescriptionValidator
     {

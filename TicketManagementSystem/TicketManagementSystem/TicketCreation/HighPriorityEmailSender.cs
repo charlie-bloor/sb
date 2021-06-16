@@ -1,6 +1,6 @@
 using EmailService;
 
-namespace TicketManagementSystem
+namespace TicketManagementSystem.TicketCreation
 {
     public interface IHighPriorityEmailSender
     {

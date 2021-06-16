@@ -1,6 +1,9 @@
 using EmailService;
 using Microsoft.Extensions.DependencyInjection;
-using TicketManagementSystem.Validators;
+using TicketManagementSystem.Repositories;
+using TicketManagementSystem.TicketAssignment;
+using TicketManagementSystem.TicketCreation;
+using TicketManagementSystem.TicketCreation.Validators;
 
 namespace TicketManagementSystem
 {

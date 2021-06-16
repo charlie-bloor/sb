@@ -1,4 +1,6 @@
-namespace TicketManagementSystem
+using TicketManagementSystem.Repositories;
+
+namespace TicketManagementSystem.TicketAssignment
 {
     public interface ITicketAssigner
     {

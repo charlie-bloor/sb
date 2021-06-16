@@ -3,6 +3,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using TestUtilities;
+using TicketManagementSystem.Exceptions;
+using TicketManagementSystem.Repositories;
 
 namespace TicketManagementSystem.Tests
 {

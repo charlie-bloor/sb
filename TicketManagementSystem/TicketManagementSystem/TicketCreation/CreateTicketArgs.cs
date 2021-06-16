@@ -1,6 +1,6 @@
 using System;
 
-namespace TicketManagementSystem
+namespace TicketManagementSystem.TicketCreation
 {
     public class CreateTicketArgs
     {

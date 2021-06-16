@@ -1,9 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-
-// TODO:
-// The TicketRepository must remain static, so create a wrapper class
-// Optionally, create an GetAccountManagerGetter: is this going too far?
+using TicketManagementSystem.TicketAssignment;
+using TicketManagementSystem.TicketCreation;
 
 namespace TicketManagementSystem
 {
@@ -38,12 +36,5 @@ namespace TicketManagementSystem
             var ticketAssigner = serviceProvider.GetRequiredService<TicketAssigner>();
             ticketAssigner.AssignTicket(ticketId, username);
         }
-    }
-
-    public enum Priority
-    {
-        High,
-        Medium,
-        Low
     }
 }

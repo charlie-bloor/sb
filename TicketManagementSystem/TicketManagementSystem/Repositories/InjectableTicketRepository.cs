@@ -1,6 +1,6 @@
 using System;
 
-namespace TicketManagementSystem
+namespace TicketManagementSystem.Repositories
 {
     public interface IInjectableTicketRepository
     {

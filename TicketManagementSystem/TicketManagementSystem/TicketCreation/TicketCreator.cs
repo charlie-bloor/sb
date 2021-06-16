@@ -1,6 +1,7 @@
-using TicketManagementSystem.Validators;
+using TicketManagementSystem.Repositories;
+using TicketManagementSystem.TicketCreation.Validators;
 
-namespace TicketManagementSystem
+namespace TicketManagementSystem.TicketCreation
 {
     public interface ITicketCreator
     {

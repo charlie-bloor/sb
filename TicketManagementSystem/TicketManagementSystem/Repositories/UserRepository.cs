@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
+using TicketManagementSystem.Exceptions;
 
-namespace TicketManagementSystem
+namespace TicketManagementSystem.Repositories
 {
     public interface IUserRepository
     {
